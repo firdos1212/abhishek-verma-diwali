@@ -1,250 +1,235 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Abhishek Verma - Diwali Surprise</title>
+<title>Abhishek Verma - Diwali Surprise ❤️</title>
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{
-  overflow:hidden;
-  background:#100719;
-  font-family:Arial,sans-serif;
+html,body{
+ width:100%;height:100%;overflow:hidden;
+ background:#100817;font-family:Arial,sans-serif;
 }
 canvas{display:block}
-#title{
-  position:absolute;
-  top:5%;
-  width:100%;
-  text-align:center;
-  color:#ffe45c;
-  font-size:17px;
-  font-weight:bold;
-  text-shadow:0 0 12px orange,0 0 20px red;
-  z-index:5;
+#message{
+ position:fixed;top:4%;left:0;width:100%;
+ text-align:center;color:#ffdf65;
+ font-size:clamp(15px,4vw,23px);
+ font-weight:bold;line-height:1.5;
+ text-shadow:0 0 10px orange,0 0 20px red;
+ z-index:5;pointer-events:none;
 }
 #name{
-  position:absolute;
-  top:12%;
-  width:100%;
-  text-align:center;
-  color:white;
-  font-size:25px;
-  font-weight:bold;
-  text-shadow:0 0 15px #ff9b00;
-  z-index:5;
+ position:fixed;top:14%;width:100%;
+ text-align:center;color:white;
+ font-size:18px;font-weight:bold;
+ text-shadow:0 0 12px #ff8800;
+ z-index:5;pointer-events:none;
 }
-#record{
-  position:absolute;
-  bottom:20px;
-  left:50%;
-  transform:translateX(-50%);
-  padding:13px 25px;
-  border:0;
-  border-radius:30px;
-  background:linear-gradient(45deg,#ff4d00,#ffcc00);
-  color:white;
-  font-size:15px;
-  font-weight:bold;
-  z-index:10;
+#buttons{
+ position:fixed;bottom:18px;width:100%;
+ display:flex;justify-content:center;gap:10px;z-index:10;
+}
+button{
+ border:0;border-radius:25px;padding:12px 18px;
+ background:linear-gradient(45deg,#ff5b16,#ffcc37);
+ color:#321306;font-weight:bold;font-size:14px;
 }
 </style>
 </head>
 
 <body>
 
-<div id="title">
-  ✨ HAPPY DIWALI ✨
+<div id="message">
+✨ It's 8th November Diwali ✨<br>
+So you gifted this to your girlfriend ❤️
 </div>
 
-<div id="name">
-  Abhishek Verma ❤️
+<div id="name">ABHISHEK VERMA ❤️</div>
+
+<div id="buttons">
+<button onclick="restart()">▶ Replay</button>
+<button onclick="recordVideo()">🎥 Create Video</button>
 </div>
 
-<button id="record" onclick="recordVideo()">
-  Create Diwali Video 🎥
-</button>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r160/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
 
 <script>
-const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x160719);
-scene.fog = new THREE.Fog(0x160719,20,65);
+const scene=new THREE.Scene();
+scene.background=new THREE.Color(0x160b20);
+scene.fog=new THREE.Fog(0x160b20,25,65);
 
-const camera = new THREE.PerspectiveCamera(
-  60,innerWidth/innerHeight,0.1,1000
+const camera=new THREE.PerspectiveCamera(
+55,innerWidth/innerHeight,0.1,100
 );
 
-const renderer = new THREE.WebGLRenderer({
-  antialias:true,
-  preserveDrawingBuffer:true
-});
-
+const renderer=new THREE.WebGLRenderer({antialias:true});
 renderer.setSize(innerWidth,innerHeight);
 renderer.setPixelRatio(Math.min(devicePixelRatio,2));
 renderer.shadowMap.enabled=true;
-renderer.shadowMap.type=THREE.PCFSoftShadowMap;
 renderer.toneMapping=THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure=1.4;
-
+renderer.toneMappingExposure=1.3;
 document.body.appendChild(renderer.domElement);
 
-// LIGHTS
-scene.add(new THREE.AmbientLight(0xffffff,1.5));
+scene.add(new THREE.HemisphereLight(0xffd9b0,0x392033,2));
 
-const moonLight=new THREE.DirectionalLight(0xffd6a0,2);
-moonLight.position.set(-10,20,10);
-moonLight.castShadow=true;
-scene.add(moonLight);
+const mainLight=new THREE.DirectionalLight(0xffd5a0,2);
+mainLight.position.set(-5,15,10);
+mainLight.castShadow=true;
+scene.add(mainLight);
 
-const warmLight=new THREE.PointLight(0xff6600,100,35);
-warmLight.position.set(0,8,0);
+const warmLight=new THREE.PointLight(0xff8a22,40,35);
+warmLight.position.set(0,8,-5);
 scene.add(warmLight);
 
-// MATERIALS
-function mat(color,roughness=0.8){
+function material(color,roughness=0.8){
  return new THREE.MeshStandardMaterial({
-  color,
-  roughness
+  color:color,roughness:roughness
  });
 }
 
-// OBJECT CREATOR
-function cube(x,y,z,w,h,d,color){
- const mesh=new THREE.Mesh(
-  new THREE.BoxGeometry(w,h,d),
-  mat(color)
+function box(x,y,z,w,h,d,color){
+ const m=new THREE.Mesh(
+  new THREE.BoxGeometry(w,h,d),material(color)
  );
- mesh.position.set(x,y,z);
- mesh.castShadow=true;
- mesh.receiveShadow=true;
- scene.add(mesh);
- return mesh;
+ m.position.set(x,y,z);
+ m.castShadow=true;
+ m.receiveShadow=true;
+ scene.add(m);
+ return m;
 }
 
-// GROUND
-cube(0,-0.4,-10,35,0.7,65,0x8e6254);
+function sphere(x,y,z,r,color){
+ const m=new THREE.Mesh(
+  new THREE.SphereGeometry(r,16,16),material(color)
+ );
+ m.position.set(x,y,z);
+ scene.add(m);
+ return m;
+}
 
-// ROAD
-cube(0,-0.02,-10,9,0.1,65,0x6e4840);
+// GROUND AND STREET
+
+box(0,-0.45,-15,35,0.7,65,0x754c42);
+box(0,-0.05,-15,9,0.12,65,0x49332e);
 
 // ROAD BRICKS
-for(let z=-38;z<20;z+=1.2){
- for(let x=-4;x<=4;x+=1.2){
-  cube(x,0.04,z,1.1,0.05,1.1,0xb87962);
+
+for(let z=-43;z<15;z+=1.3){
+ for(let x=-4;x<=4;x+=1.3){
+  box(x,0.02,z,1.22,0.04,1.22,0xa16d5a);
  }
 }
 
 // BUILDINGS
+
 function building(x,z,color){
 
- // Main building
- cube(x,4,z,6,8,6,color);
+ box(x,4,z,6,8,6,color);
 
  // Roof
- cube(x,8.1,z,6.5,0.25,6.5,0xffa43b);
+ box(x,8.1,z,6.5,0.3,6.5,0xffa23a);
 
  // Front decoration
- cube(x,4,z-3.08,6,0.15,0xffc15a);
+ box(x,3.7,z-3.08,6,0.15,0xffc04b);
 
  // Door
- cube(x,1.6,z-3.12,1.7,3.1,0x451b15);
+ box(x,1.5,z-3.13,1.8,3,0x451b15);
 
  // Door frame
- cube(x,3.3,z-3.2,2,0.15,0xffc02e);
+ box(x,3.1,z-3.22,2.1,0.15,0xffbd3d);
+ box(x-1,1.5,z-3.22,0.12,3.1,0xffbd3d);
+ box(x+1,1.5,z-3.22,0.12,3.1,0xffbd3d);
 
  // Windows
- for(let i=-2;i<=2;i+=4){
-  cube(x+i,5.5,z-3.12,1.25,1.6,0x30202b);
-  cube(x+i,5.5,z-3.22,0.9,1.25,0xffc94e);
-
-  // Window borders
-  cube(x+i,6.35,z-3.3,1.5,0.12,0xff9b22);
-  cube(x+i,4.65,z-3.3,1.5,0.12,0xff9b22);
+ for(let i of [-2,2]){
+  box(x+i,5.2,z-3.12,1.3,1.7,0x291923);
+  box(x+i,5.2,z-3.2,0.95,1.35,0xffc957);
+  box(x+i,6.1,z-3.3,1.5,0.12,0xff9c28);
+  box(x+i,4.3,z-3.3,1.5,0.12,0xff9c28);
  }
 
  // Balcony
- cube(x,3.4,z-3.55,5,0.12,0x292020);
-
- for(let i=-2.2;i<=2.2;i+=0.4){
-  cube(x+i,3.8,z-3.55,0.08,0.8,0x282020);
+ box(x,3.35,z-3.5,5,0.13,0x251d20);
+ for(let i=-2.2;i<=2.2;i+=0.45){
+  box(x+i,3.75,z-3.5,0.08,0.8,0x292020);
  }
 
- // Roof decorations
- for(let i=-2;i<=2;i+=1){
-  cube(x+i,8.35,z,0.15,0.4,0xffd34b);
+ // Roof ornaments
+ for(let i=-2;i<=2;i++){
+  sphere(x+i,8.5,z,0.13,0xffd04b);
  }
 
- // Hanging lights
- for(let i=-2.5;i<=2.5;i+=0.5){
-  const bulb=new THREE.Mesh(
-   new THREE.SphereGeometry(0.09,12,12),
-   new THREE.MeshBasicMaterial({color:0xffd52a})
-  );
-  bulb.position.set(x+i,7.5,z-3.4);
-  scene.add(bulb);
+ // Hanging garland
+ for(let i=-2.5;i<=2.5;i+=0.4){
+  sphere(x+i,7.2,z-3.35,0.11,0xffd43a);
  }
 }
 
-// BUILDING ROWS
-building(-7,-2,0xc94b2e);
-building(7,-2,0x2864aa);
+// Rows of colorful houses
 
-building(-7,-11,0xe66a32);
-building(7,-11,0x8b3b9f);
+building(-7,-3,0xd65332);
+building(7,-3,0x306db7);
 
-building(-7,-20,0xc64b29);
-building(7,-20,0x2469a5);
+building(-7,-12,0xe87535);
+building(7,-12,0x9343a8);
 
-building(-7,-29,0xd65a35);
-building(7,-29,0x8b398d);
+building(-7,-21,0xc64c30);
+building(7,-21,0x3175bd);
+
+building(-7,-30,0xe36b37);
+building(7,-30,0x8240a1);
 
 // DIYAS
+
+const flames=[];
+
 function diya(x,z){
 
  const base=new THREE.Mesh(
-  new THREE.SphereGeometry(0.35,16,12),
-  mat(0xff7515)
+  new THREE.SphereGeometry(0.34,16,12),
+  material(0xe66b19)
  );
  base.scale.y=0.45;
- base.position.set(x,0.25,z);
+ base.position.set(x,0.22,z);
  scene.add(base);
 
  const flame=new THREE.Mesh(
-  new THREE.ConeGeometry(0.14,0.55,12),
-  new THREE.MeshBasicMaterial({color:0xffd72e})
+  new THREE.ConeGeometry(0.13,0.48,12),
+  new THREE.MeshBasicMaterial({color:0xffdc39})
  );
- flame.position.set(x,0.55,z);
+ flame.position.set(x,0.52,z);
  scene.add(flame);
+ flames.push(flame);
 
- const glow=new THREE.PointLight(0xff8c21,1.5,3);
- glow.position.set(x,0.7,z);
+ const glow=new THREE.PointLight(0xff9b28,1.8,3);
+ glow.position.set(x,0.6,z);
  scene.add(glow);
 }
 
-for(let z=-30;z<10;z+=3){
+for(let z=-34;z<10;z+=3){
  diya(-4.8,z);
  diya(4.8,z);
 }
 
 // RANGOLI
+
 const rangoli=new THREE.Group();
-rangoli.position.set(0,0.13,-5);
+rangoli.position.set(0,0.08,-6);
 scene.add(rangoli);
 
 const colors=[
- 0xff0099,0xffd000,0x00d9ff,
- 0xff6600,0xffffff,0x9b30ff
+ 0xff2594,0xffd22f,0x24d9ff,
+ 0x9b42ff,0xff6a20,0xffffff
 ];
 
 for(let i=0;i<12;i++){
-
  const angle=i*Math.PI/6;
 
  const petal=new THREE.Mesh(
-  new THREE.CircleGeometry(0.9,6),
+  new THREE.CircleGeometry(0.85,6),
   new THREE.MeshBasicMaterial({
    color:colors[i%colors.length],
    side:THREE.DoubleSide
@@ -252,160 +237,172 @@ for(let i=0;i<12;i++){
  );
 
  petal.position.set(
-  Math.cos(angle)*0.8,
-  0,
-  Math.sin(angle)*0.8
+  Math.cos(angle)*0.8,0,Math.sin(angle)*0.8
  );
-
  petal.rotation.x=-Math.PI/2;
  rangoli.add(petal);
 }
 
 const center=new THREE.Mesh(
  new THREE.CircleGeometry(0.5,32),
- new THREE.MeshBasicMaterial({color:0xffd000})
+ new THREE.MeshBasicMaterial({color:0xffd82f})
 );
 center.rotation.x=-Math.PI/2;
-center.position.y=0.01;
+center.position.y=0.02;
 rangoli.add(center);
 
-// COUPLE
-function person(x,z,shirt,hairColor){
+// FLOWER PETALS
 
+for(let i=0;i<8;i++){
+ const a=i*Math.PI/4;
+ const p=new THREE.Mesh(
+  new THREE.CircleGeometry(0.3,16),
+  new THREE.MeshBasicMaterial({color:0xffffff})
+ );
+ p.position.set(Math.cos(a)*0.4,0.03,Math.sin(a)*0.4);
+ p.rotation.x=-Math.PI/2;
+ rangoli.add(p);
+}
+
+// ROMANTIC COUPLE
+
+function person(x,z,shirt,hair){
+
+ const group=new THREE.Group();
+ group.position.set(x,0,z);
+ scene.add(group);
+
+ // Body
  const body=new THREE.Mesh(
-  new THREE.CapsuleGeometry(0.35,0.9,5,12),
-  mat(shirt)
+  new THREE.CapsuleGeometry(0.32,0.85,5,12),
+  material(shirt)
  );
- body.position.set(x,1.15,z);
- scene.add(body);
+ body.position.y=1.05;
+ group.add(body);
 
+ // Head
  const head=new THREE.Mesh(
-  new THREE.SphereGeometry(0.36,20,20),
-  mat(0xffc18d)
+  new THREE.SphereGeometry(0.34,20,20),
+  material(0xffc18e)
  );
- head.position.set(x,2.05,z);
- scene.add(head);
+ head.position.y=1.95;
+ group.add(head);
 
- const hair=new THREE.Mesh(
-  new THREE.SphereGeometry(0.39,20,12),
-  mat(hairColor)
+ // Hair
+ const hairMesh=new THREE.Mesh(
+  new THREE.SphereGeometry(0.36,20,12),
+  material(hair)
  );
- hair.scale.y=0.65;
- hair.position.set(x,2.25,z);
- scene.add(hair);
+ hairMesh.scale.y=0.62;
+ hairMesh.position.y=2.12;
+ group.add(hairMesh);
 
  // Legs
  for(let i=-1;i<=1;i+=2){
-  cube(x+i*0.17,0.35,z,0.17,0.7,0.2,0x251a20);
+  const leg=new THREE.Mesh(
+   new THREE.BoxGeometry(0.16,0.65,0.2),
+   material(0x24191d)
+  );
+  leg.position.set(i*0.15,0.32,0);
+  group.add(leg);
  }
 
- return body;
+ return group;
 }
 
-const girl=person(-0.35,-1,0xff3290,0x171010);
-const boy=person(0.35,-1,0xffffff,0x171010);
+const girl=person(-0.38,-1,0xf02e83,0x171014);
+const boy=person(0.38,-1,0xffffff,0x19110e);
 
-// HEART
+// Small heart above couple
+
 const heartShape=new THREE.Shape();
-heartShape.moveTo(0,0);
-heartShape.bezierCurveTo(0,0, -0.5,0.5,-0.8,0.1);
-heartShape.bezierCurveTo(-1,-0.5,0,-1,0,-1.3);
-heartShape.bezierCurveTo(0,-1,1,-0.5,0.8,0.1);
-heartShape.bezierCurveTo(0.5,0.5,0,0,0,0);
+heartShape.moveTo(0,0.2);
+heartShape.bezierCurveTo(-0.7,0.8,-1.1,0,0,-0.8);
+heartShape.bezierCurveTo(1.1,0,0.7,0.8,0,0.2);
 
 const heart=new THREE.Mesh(
  new THREE.ShapeGeometry(heartShape),
  new THREE.MeshBasicMaterial({
-  color:0xff1744,
-  side:THREE.DoubleSide
+  color:0xff1744,side:THREE.DoubleSide
  })
 );
-heart.scale.set(0.5,0.5,0.5);
-heart.position.set(0,3,-1);
+heart.scale.set(0.55,0.55,0.55);
+heart.position.set(0,3.3,-1);
 scene.add(heart);
 
 // BUNNY
+
 const bunny=new THREE.Group();
+bunny.position.set(2,0.15,-1);
 scene.add(bunny);
-bunny.position.set(2,0.2,-1);
 
-const bunnyBody=new THREE.Mesh(
- new THREE.SphereGeometry(0.35,16,16),
- mat(0xffffff)
+const white=material(0xffffff);
+const body=new THREE.Mesh(
+ new THREE.SphereGeometry(0.34,16,16),white
 );
-bunnyBody.scale.set(1,1.2,0.8);
-bunny.add(bunnyBody);
+body.scale.set(1,1.15,0.8);
+bunny.add(body);
 
-const bunnyHead=new THREE.Mesh(
- new THREE.SphereGeometry(0.25,16,16),
- mat(0xffffff)
+const head=new THREE.Mesh(
+ new THREE.SphereGeometry(0.25,16,16),white
 );
-bunnyHead.position.set(0,0.4,0);
-bunny.add(bunnyHead);
+head.position.set(0,0.42,0);
+bunny.add(head);
 
-for(let i=-1;i<=1;i+=2){
+for(let i of [-1,1]){
  const ear=new THREE.Mesh(
-  new THREE.CapsuleGeometry(0.08,0.5,4,8),
-  mat(0xffffff)
+  new THREE.CapsuleGeometry(0.075,0.45,4,8),white
  );
  ear.position.set(i*0.13,0.85,0);
- ear.rotation.z=i*0.2;
+ ear.rotation.z=-i*0.17;
  bunny.add(ear);
 }
 
-// STAR
+sphere(2,0.62,-0.8,0.045,0xffa0a0);
+
+// STAR IN SKY
+
 const star=new THREE.Mesh(
- new THREE.OctahedronGeometry(1),
- new THREE.MeshBasicMaterial({color:0xffdc35})
+ new THREE.OctahedronGeometry(0.8),
+ new THREE.MeshBasicMaterial({color:0xffdd43})
 );
-star.position.set(0,12,-15);
+star.position.set(0,12,-18);
 scene.add(star);
 
-// STREET LIGHTS
-for(let z=-30;z<10;z+=7){
+// STREET LAMPS
 
+for(let z=-30;z<10;z+=7){
  for(let side of [-1,1]){
   const x=side*5.5;
+  box(x,2.8,z,0.13,5.5,0.13,0x352322);
+  sphere(x,5.7,z,0.23,0xffd34b);
 
-  cube(x,3,z,0.12,6,0.12,0x302020);
-
-  const lamp=new THREE.Mesh(
-   new THREE.SphereGeometry(0.25,16,16),
-   new THREE.MeshBasicMaterial({color:0xffc735})
-  );
-  lamp.position.set(x,6,z);
+  const lamp=new THREE.PointLight(0xffa62b,4,9);
+  lamp.position.set(x,5.7,z);
   scene.add(lamp);
-
-  const glow=new THREE.PointLight(0xffa52b,5,10);
-  glow.position.set(x,6,z);
-  scene.add(glow);
  }
 }
 
-// HANGING DIWALI LIGHTS
-const lights=[];
+// HANGING LIGHTS
 
-for(let i=0;i<35;i++){
+const bulbs=[];
+
+for(let i=0;i<40;i++){
  const bulb=new THREE.Mesh(
-  new THREE.SphereGeometry(0.12,12,12),
-  new THREE.MeshBasicMaterial({
-   color:colors[i%colors.length]
-  })
+  new THREE.SphereGeometry(0.1,10,10),
+  new THREE.MeshBasicMaterial({color:colors[i%colors.length]})
  );
 
  bulb.position.set(
-  -8+(i%18)*0.9,
-  10,
-  -15+Math.floor(i/18)*2
+  -8+(i%20)*0.85,
+  9,
+  -16+Math.floor(i/20)*2
  );
-
  scene.add(bulb);
- lights.push(bulb);
+ bulbs.push(bulb);
 }
 
-// STARS IN SKY
-const stars=new THREE.Group();
-scene.add(stars);
+// SKY STARS
 
 for(let i=0;i<100;i++){
  const s=new THREE.Mesh(
@@ -413,34 +410,35 @@ for(let i=0;i<100;i++){
   new THREE.MeshBasicMaterial({color:0xffffff})
  );
  s.position.set(
-  (Math.random()-0.5)*45,
-  9+Math.random()*15,
+  (Math.random()-0.5)*40,
+  9+Math.random()*12,
   -35+Math.random()*30
  );
- stars.add(s);
+ scene.add(s);
 }
 
-// FIREWORKS
+// FIREWORK PARTICLES
+
 const fireworks=[];
 
-function createFirework(){
- const group=new THREE.Group();
+function firework(){
 
+ const group=new THREE.Group();
  const color=colors[Math.floor(Math.random()*colors.length)];
 
- for(let i=0;i<35;i++){
+ for(let i=0;i<45;i++){
   const p=new THREE.Mesh(
    new THREE.SphereGeometry(0.055,6,6),
    new THREE.MeshBasicMaterial({color})
   );
 
-  const angle=Math.random()*Math.PI*2;
-  const elevation=Math.random()*Math.PI;
+  const a=Math.random()*Math.PI*2;
+  const e=Math.random()*Math.PI;
 
   p.userData.velocity=new THREE.Vector3(
-   Math.cos(angle)*Math.sin(elevation),
-   Math.cos(elevation),
-   Math.sin(angle)*Math.sin(elevation)
+   Math.cos(a)*Math.sin(e),
+   Math.cos(e),
+   Math.sin(a)*Math.sin(e)
   );
 
   group.add(p);
@@ -449,121 +447,143 @@ function createFirework(){
  group.position.set(
   (Math.random()-0.5)*12,
   9+Math.random()*5,
-  -15-Math.random()*12
+  -14-Math.random()*15
  );
 
  scene.add(group);
  fireworks.push(group);
 }
 
-for(let i=0;i<4;i++)createFirework();
+for(let i=0;i<4;i++)firework();
 
-// CAMERA
-camera.position.set(0,4,13);
-camera.lookAt(0,2,0);
+// CAMERA ANIMATION
 
-let t=0;
+let time=0;
+let startTime=performance.now();
 
 function animate(){
 
  requestAnimationFrame(animate);
- t+=0.01;
+ time+=0.01;
 
- // Camera movement
- camera.position.x=Math.sin(t*0.35)*2;
- camera.position.y=4.5+Math.sin(t*0.5)*0.5;
- camera.position.z=13-t*0.15;
+ // Camera moves forward and looks around street
+ const phase=(time%25);
 
- if(camera.position.z<5){
-  camera.position.z=13;
- }
+ camera.position.x=Math.sin(phase*0.3)*1.4;
+ camera.position.y=4.5+Math.sin(time*0.7)*0.3;
+ camera.position.z=13-phase*0.3;
 
  camera.lookAt(
-  Math.sin(t*0.2)*0.7,
+  Math.sin(time*0.25)*0.6,
   2,
   -7
  );
 
  // Couple movement
- girl.rotation.y=Math.sin(t*2)*0.08;
- boy.rotation.y=-Math.sin(t*2)*0.08;
+ girl.rotation.y=Math.sin(time*1.8)*0.12;
+ boy.rotation.y=-Math.sin(time*1.8)*0.12;
 
- // Heart animation
- heart.position.y=3+Math.sin(t*3)*0.2;
- heart.scale.setScalar(0.5+Math.sin(t*3)*0.06);
+ // Floating heart
+ heart.position.y=3.3+Math.sin(time*3)*0.15;
+ heart.rotation.y=Math.sin(time)*0.12;
 
- // Rangoli
+ // Rangoli spin
  rangoli.rotation.y+=0.003;
 
- // Star
- star.rotation.y+=0.01;
- star.rotation.x+=0.005;
+ // Star spin
+ star.rotation.y+=0.015;
+ star.rotation.x+=0.006;
 
- // Bunny
- bunny.position.y=0.2+Math.abs(Math.sin(t*3))*0.15;
+ // Bunny hopping
+ bunny.position.y=0.15+Math.abs(Math.sin(time*3))*0.13;
 
- // Lights
- lights.forEach((l,i)=>{
-  l.scale.setScalar(0.7+Math.sin(t*5+i)*0.3);
+ // Light flickering
+ bulbs.forEach((b,i)=>{
+  b.scale.setScalar(0.75+Math.sin(time*4+i)*0.2);
  });
 
- // Fireworks
+ flames.forEach((f,i)=>{
+  f.scale.y=0.85+Math.sin(time*7+i)*0.2;
+ });
+
+ // Fireworks particles
  fireworks.forEach(group=>{
   group.children.forEach(p=>{
-   p.position.addScaledVector(
-    p.userData.velocity,0.025
-   );
+   p.position.addScaledVector(p.userData.velocity,0.025);
   });
  });
 
- // Light flickering
- warmLight.intensity=90+Math.sin(t*5)*15;
+ warmLight.intensity=35+Math.sin(time*4)*5;
 
  renderer.render(scene,camera);
 }
 
 animate();
 
+// REPLAY
+
+function restart(){
+ time=0;
+ camera.position.set(0,4.5,13);
+}
+
 // VIDEO RECORDING
+
 function recordVideo(){
 
- const button=document.getElementById("record");
- button.style.display="none";
+ const button=document.querySelector("#record");
+ if(!window.MediaRecorder){
+  alert("Video recording is not supported in this browser. Try Chrome.");
+  return;
+ }
 
  const stream=renderer.domElement.captureStream(30);
 
- const recorder=new MediaRecorder(stream,{
-  mimeType:"video/webm;codecs=vp9"
- });
+ let options={};
+ if(MediaRecorder.isTypeSupported("video/webm;codecs=vp9")){
+  options.mimeType="video/webm;codecs=vp9";
+ }else if(MediaRecorder.isTypeSupported("video/webm")){
+  options.mimeType="video/webm";
+ }
+
+ let recorder;
+ try{
+  recorder=new MediaRecorder(stream,options);
+ }catch(e){
+  alert("Recording could not start. Try Chrome.");
+  return;
+ }
 
  const chunks=[];
-
  recorder.ondataavailable=e=>{
   if(e.data.size>0)chunks.push(e.data);
  };
 
  recorder.onstop=()=>{
-
   const blob=new Blob(chunks,{type:"video/webm"});
   const url=URL.createObjectURL(blob);
-
   const a=document.createElement("a");
   a.href=url;
   a.download="Abhishek-Verma-Diwali.webm";
   a.click();
-
-  URL.revokeObjectURL(url);
-  button.style.display="block";
+  setTimeout(()=>URL.revokeObjectURL(url),5000);
+  button.textContent="🎥 Create Video";
+  button.disabled=false;
+  stream.getTracks().forEach(t=>t.stop());
  };
 
+ button.textContent="Recording...";
+ button.disabled=true;
+ restart();
  recorder.start();
 
  setTimeout(()=>{
-  recorder.stop();
+  if(recorder.state==="recording")recorder.stop();
  },20000);
 }
 
 // RESIZE
+
 window.addEventListener("resize",()=>{
  camera.aspect=innerWidth/innerHeight;
  camera.updateProjectionMatrix();
